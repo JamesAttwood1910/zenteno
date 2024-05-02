@@ -1,25 +1,34 @@
+import os
+from dotenv import load_dotenv
+from datetime import datetime
+
 from flask import Flask, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
-from datetime import datetime
+
 import plotly.graph_objs as go
 import plotly.express as px
 import pandas as pd
 
+load_dotenv()
+
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
-app.config["SECRET_KEY"] = "abc"
-db = SQLAlchemy()
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DB_NAME')
+app.config["SECRET_KEY"] = os.getenv('FLASK_SECRET_KEY')
+japw = os.getenv('USER_JA_PW')
+jspw = os.getenv('USER_JS_PW')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-class Users(UserMixin, db.Model):
+db = SQLAlchemy()
+
+class users(UserMixin, db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(250), unique=True, nullable=False)
 	password = db.Column(db.String(250), nullable=False)
 	
-class Gastos5(db.Model):
+class gastos(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	fecha = db.Column(db.Date())
 	costo = db.Column(db.Float())
@@ -30,6 +39,12 @@ db.init_app(app)
 
 with app.app_context():
 	db.create_all()
+	admin = users(username='James', password=japw)
+	guest = users(username='Javi', password=jspw)
+
+	db.session.add(admin)
+	db.session.add(guest)
+	db.session.commit()
 
 @app.route("/")
 def home():
@@ -38,7 +53,7 @@ def home():
 @app.route("/login", methods=["GET", "POST"])
 def login():
 	if request.method == "POST":
-		user = Users.query.filter_by(
+		user = users.query.filter_by(
 			username=request.form.get("username")).first()
 		if user.password == request.form.get("password"):
 			login_user(user)
@@ -52,7 +67,7 @@ def logout():
 
 @login_manager.user_loader
 def loader_user(user_id):
-	return Users.query.get(user_id)
+	return users.query.get(user_id)
 
 @app.route("/registered_gasto")
 def registered_gasto():
@@ -69,7 +84,7 @@ def escribir():
 			persona_ = "James"
 		elif current_user.username == "Javi":
 			persona_ = "Javi"
-		new_gasto = Gastos5(fecha=fecha_python, costo=costo_, tipo=tipo_, persona=persona_)
+		new_gasto = gastos(fecha=fecha_python, costo=costo_, tipo=tipo_, persona=persona_)
 		db.session.add(new_gasto)
 		db.session.commit()
 		return redirect(url_for("registered_gasto")) 
@@ -78,7 +93,7 @@ def escribir():
 
 @app.route('/leer_gastos', methods=["GET"])
 def leer():
-	all_gastos = Gastos5.query.all()
+	all_gastos = gastos.query.all()
 	# Format data for the Plotly table
 	column_names = ['Fecha', 'Costo', 'Tipo', 'Persona']  # Adjust column names as per your model
 	data = [[gasto.fecha, gasto.costo, gasto.tipo, gasto.persona] for gasto in all_gastos]
