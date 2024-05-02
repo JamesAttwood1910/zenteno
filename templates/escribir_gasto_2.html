@@ -4,9 +4,9 @@
 <div class="container">
     <form method="POST"> 
         <label>Fecha:</label>
-        <input name="fecha", placeholder="Ingresa fecha (dd/mm/yyyy)" required><br/>
+        <input name="fecha" type="date" required><br/>
         <label>Costo:</label> 
-        <input name="costo" placeholder="Ingresa costo" required><br/> 
+        <input name="costo" type="number" placeholder="Ingresa costo CLP" min="0" step="1000" required><br/> 
         <label>Tipo de compra:</label>
         <select class="form-control" id="dropdown" name="tipo">
             <option value="supermercado">Supermercado</option>
@@ -14,8 +14,14 @@
             <option value="transporte">Transporte</option>
             <option value="deporte">Deporte</option>
             <option value="pedir_comida">Pedir comida</option>
+            <option value="arriendo">Arriendo</option>
             <option value="casa">Casa</option>
             <option value="otro">Otro</option>
+        </select><br/>
+        <label>Quien paga:</label>
+        <select class="form-control" id="dropdown" name="persona">
+            <option value="james">James</option>
+            <option value="javi">Javi</option>
         </select><br/>
         <button type="submit">Submit</button>
     </form> 
