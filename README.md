@@ -1,2 +1,2 @@
 # zenteno
-App for recording spending
+App to record keep track of spending
