@@ -38,13 +38,22 @@ class gastos(db.Model):
 db.init_app(app)
 
 with app.app_context():
+	
 	db.create_all()
+
 	admin = users(username='James', password=japw)
 	guest = users(username='Javi', password=jspw)
-
-	db.session.add(admin)
-	db.session.add(guest)
-	db.session.commit()
+	
+	exists = bool(db.session.query(users).filter_by(username='James').first())
+	exists_guest = bool(db.session.query(users).filter_by(username='Javi').first())
+	
+	if exists != True:
+		db.session.add(admin)
+		db.session.commit()
+	
+	if exists_guest != True:
+		db.session.add(guest)
+		db.session.commit()
 
 @app.route("/")
 def home():
@@ -80,10 +89,11 @@ def escribir():
 		fecha_python = datetime.strptime(fecha_, "%d/%m/%Y").date()
 		costo_ = request.form['costo']
 		tipo_ = request.form['tipo']
-		if current_user.username == "James":
-			persona_ = "James"
-		elif current_user.username == "Javi":
-			persona_ = "Javi"
+		persona_ = request.form['persona']
+		# if current_user.username == "James":
+		# 	persona_ = "James"
+		# elif current_user.username == "Javi":
+		# 	persona_ = "Javi"
 		new_gasto = gastos(fecha=fecha_python, costo=costo_, tipo=tipo_, persona=persona_)
 		db.session.add(new_gasto)
 		db.session.commit()
@@ -100,6 +110,26 @@ def leer():
 	df = pd.DataFrame(data, columns=column_names)
 	
 	return render_template("leer_gastos_2.html", gastos=all_gastos, title="Consultar Gastos")
+
+@app.route('/deleted_gasto')
+def deleted_gasto():
+	return render_template("deleted_gasto_success.html")
+
+@app.route('/unsuccesful_delete_gasto')
+def unsuccesful_delete_gasto():
+	return render_template("deleted_gasto_unsuccessful.html")
+
+@app.route('/delete_row/<int:gasto_id>', methods=['GET','POST'])
+def delete_row(gasto_id):
+    # Delete the row from the database based on the row_id
+	record = gastos.query.get(gasto_id)
+    # Check if the record exists
+	if record:
+		db.session.delete(record)
+		db.session.commit()
+		return redirect(url_for("deleted_gasto")) 
+	else: 
+		return redirect(url_for("unsuccesful_delete_gasto")) 
 
 if __name__ == "__main__":
 	app.run()
