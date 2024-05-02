@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+    <table id="data" class="table table-striped">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>fecha</th>
+                <th>costo</th>
+                <th>tipo</th>
+                <th>persona</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for gasto in gastos %}
+            <tr>
+                <td>{{ gasto.id }}</td>
+                <td>{{ gasto.fecha }}</td>
+                <td>{{ gasto.costo }}</td>
+                <td>{{ gasto.tipo }}</td>
+                <td>{{ gasto.persona }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<hr>
+<div class="container">
+    <nav>
+        <ul>
+            <li><a href="/escribir_gasto">Registrar otro gasto</a></li>
+            <li><a href="/leer_gastos">Consultar gastos</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</div>
+{% endblock %}
+
+{% block bodyscripts %}
+  <script>
+    $(document).ready(function () {
+      $('#data').DataTable({
+        columns: [
+        {orderable: true},
+        {orderable: true, searchable: true},
+        {orderable: true, searchable: true},
+        {orderable: true, searchable: true},
+        {orderable: true, searchable: true}],
+      });
+    });
+  </script>
+{% endblock %}

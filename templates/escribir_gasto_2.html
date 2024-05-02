@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <form method="POST"> 
+        <label>Fecha:</label>
+        <input name="fecha", placeholder="Ingresa fecha (dd/mm/yyyy)" required><br/>
+        <label>Costo:</label> 
+        <input name="costo" placeholder="Ingresa costo" required><br/> 
+        <label>Tipo de compra:</label>
+        <select class="form-control" id="dropdown" name="tipo">
+            <option value="supermercado">Supermercado</option>
+            <option value="salida">Salir</option>
+            <option value="transporte">Transporte</option>
+            <option value="deporte">Deporte</option>
+            <option value="pedir_comida">Pedir comida</option>
+            <option value="casa">Casa</option>
+            <option value="otro">Otro</option>
+        </select><br/>
+        <button type="submit">Submit</button>
+    </form> 
+</div>
+<hr>
+<div class="container">
+    <nav>
+        <ul>
+            <li><a href="/escribir_gasto">Registrar otro gasto</a></li>
+            <li><a href="/leer_gastos">Consultar gastos</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+  </div>
+
+{% endblock %}

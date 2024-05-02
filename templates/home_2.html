@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if current_user.is_authenticated %}
+	<div class="container">
+		<h4>Bienvendios, {{ current_user.username }}!</h4>
+		<p>Puedes registrar y consultar tus gastos  a continuación:</p>
+        <button type="button" onclick="window.location.href='{{ url_for('escribir') }}';">Registrar gasto</button>
+		<button type="button" onclick="window.location.href='{{ url_for('leer') }}';">Consultar gastos</button><br/> 
+	</div>
+	<hr>
+	<a href="/logout">Logout</a>
+	
+{% else %}
+	<div class="links-container">
+		<nav>
+		<ul>
+			<li><a href="/login">Login</a></li>
+		</ul>
+		</nav>
+	</div>
+{% endif %}
+
+{% endblock %}
