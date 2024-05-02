@@ -86,7 +86,7 @@ def registered_gasto():
 def escribir(): 
 	if request.method == 'POST':
 		fecha_ = request.form['fecha']
-		fecha_python = datetime.strptime(fecha_, "%d/%m/%Y").date()
+		fecha_python = datetime.strptime(fecha_, "%Y-%m-%d").date()
 		costo_ = request.form['costo']
 		tipo_ = request.form['tipo']
 		persona_ = request.form['persona']
