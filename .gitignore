@@ -1,0 +1,5 @@
+cache/*
+venv/*
+instance/*
+scratch.py
+__pycache__/*
